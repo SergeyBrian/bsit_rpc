@@ -12,10 +12,14 @@ set(MIDL_FILE ${CMAKE_CURRENT_LIST_DIR}/Interface.idl)
 add_custom_command(
         PRE_BUILD
         OUTPUT ${MIDL_OUTPUT}
-        COMMAND midl /app_config ${MIDL_FILE}
+        COMMAND midl /win32 ${MIDL_FILE}
         WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/rpc
         DEPENDS ${MIDL_FILE}
         MAIN_DEPENDENCY ${MIDL_FILE}
+)
+
+set_directory_properties(${CMAKE_CURRENT_LIST_DIR}/rpc
+        GENERATED true
 )
 
 add_executable(server server/main.cpp rpc/Interface.h rpc/Interface_s.c)
