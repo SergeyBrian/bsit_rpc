@@ -3,14 +3,53 @@
 
 #include "../rpc/Interface.h"
 #include "../common/utils/logging.h"
+#include "file_manager/file_manager.hpp"
+#include "../common/errors.hpp"
 
 RPC_STATUS CALLBACK SecurityCallback(RPC_IF_HANDLE, void *) {
     return RPC_S_OK;
 }
 
-int Login(handle_t h, unsigned char *Username, unsigned char *Password) {
-    std::cout << "User " << Username << " logged in with password " << Password << std::endl;
-    return 0;
+int Login(handle_t hBinding, unsigned char *username, unsigned char *password) {
+    INFO("Login requested for %s", username);
+    ERR err;
+    int status = LogonUser(reinterpret_cast<LPSTR>(username),
+                           nullptr,
+                           reinterpret_cast<LPSTR>(password),
+                           LOGON32_LOGON_INTERACTIVE,
+                           LOGON32_PROVIDER_DEFAULT,
+                           &hBinding);
+    if (status) {
+        err = FileManager::Instance().SetUser({
+                                                      .username = reinterpret_cast<const char *const>(username),
+                                                      .isAuthorized = true,
+                                                      .hBinding = hBinding,
+                                              });
+
+    } else {
+        err = winCodeToErr(GetLastError());
+    }
+
+    if (err) {
+        WARN("Error during login for user %s: %lu", username, GetLastError());
+    } else {
+        OKAY("User %s logged in", username);
+    }
+
+    return err;
+}
+
+int Download(handle_t hBinding, unsigned char *filename, unsigned char *buffer, int *error) {
+    if (!ImpersonateLoggedOnUser(FileManager::Instance().GetActiveUser().hBinding)) {
+        WARN("Download attempt by unauthorized user");
+        *error = ERR_Unauthorized;
+        return 0;
+    }
+
+    return FileManager::Instance().Download(filename,
+                                            buffer,
+                                            reinterpret_cast<ERR *>(error),
+                                            BUF_SIZE);
 }
 
 void show_help() {
@@ -24,6 +63,8 @@ int main(int argc, char **argv) {
         show_help();
         exit(1);
     }
+
+    g_fileManager = new FileManager();
 
     unsigned char *port = reinterpret_cast<unsigned char *>(argv[1]);
 

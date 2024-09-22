@@ -12,6 +12,7 @@ set(COMMON_SRC
         common/utils/logging.h
         common/utils/logging.cpp
         common/utils/rpc.c
+        common/errors.hpp
         rpc/Interface.h
 )
 
@@ -29,8 +30,17 @@ set_directory_properties(rpc
         GENERATED true
 )
 
-add_executable(server server/main.cpp rpc/Interface_s.c ${COMMON_SRC})
-add_executable(client client/main.cpp rpc/Interface_c.c ${COMMON_SRC})
+add_executable(server server/main.cpp rpc/Interface_s.c ${COMMON_SRC}
+        server/file_manager/file_manager.hpp
+        server/file_manager/file_manager.cpp)
+add_executable(client client/main.cpp rpc/Interface_c.c ${COMMON_SRC}
+        client/cli/cli.cpp
+        client/cli/cli.hpp
+        client/file_manager/file_manager.cpp
+        client/file_manager/file_manager.hpp
+        server/file_manager/file_manager.cpp
+        server/file_manager/file_manager.hpp
+        common/errors.hpp)
 
 target_link_libraries(server rpcrt4)
 target_link_libraries(client rpcrt4)
