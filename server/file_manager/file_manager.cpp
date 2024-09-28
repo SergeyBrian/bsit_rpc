@@ -74,3 +74,17 @@ ERR FileManager::Upload(const unsigned char *filename, const unsigned char *buff
 
     return ERR_Ok;
 }
+
+ERR FileManager::Delete(unsigned char *filename) {
+    LOG("User %s requested delete of file %s", m_activeUser.username.c_str(), filename);
+    if (DeleteFile(reinterpret_cast<LPCSTR>(filename))) {
+        OKAY("Deleted file %s", filename);
+        return ERR_Ok;
+    }
+
+    auto winErr = GetLastError();
+    WARN("Error deleting file %s: %s", filename, strerror(winErr));
+    INFO("Error: %d", winErr);
+
+    return winCodeToErr(winErr);
+}

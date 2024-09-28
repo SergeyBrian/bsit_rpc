@@ -33,9 +33,9 @@ inline ERR winCodeToErr(int code) {
         case 1326:
             return ERR_Invalid_creds;
         case 13:
-            return ERR_Permission_denied;
+        case 5:
         case 22:
-            return ERR_Logout_required;
+            return ERR_Permission_denied;
         case 2:
             return ERR_Invalid_filename;
         default:

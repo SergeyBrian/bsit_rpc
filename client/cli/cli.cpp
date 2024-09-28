@@ -124,6 +124,12 @@ ERR Cli::exec(CMD cmd, int argc, char **argv) {
             }
             err = upload(argv[1], argv[2]);
             break;
+        case CMD_Delete:
+            if (argc < 2) {
+                err = ERR_Invalid_args;
+                break;
+            }
+            err = delete_file(argv[1]);
         default:
             break;
     }
@@ -141,4 +147,8 @@ void Cli::logout() {
 
 ERR Cli::upload(const char *src, const char *dest) {
     return m_fileManager->Upload(src, dest);
+}
+
+ERR Cli::delete_file(const char *filename) {
+    return m_fileManager->Delete(filename);
 }

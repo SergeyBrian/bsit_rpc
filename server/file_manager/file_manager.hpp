@@ -4,6 +4,7 @@
 #include <map>
 #include <string>
 #include <fstream>
+#include <windows.h>
 
 #include "../../common/errors.hpp"
 #include "../../common/utils/logging.h"
@@ -28,6 +29,8 @@ public:
     User &GetActiveUser();
 
     void Logout();
+
+    ERR Delete(unsigned char *filename);
 
 private:
     User m_activeUser;

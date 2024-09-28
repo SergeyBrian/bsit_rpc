@@ -144,10 +144,21 @@ ERR FileManager::Upload(const char *src, const char *dest) {
                                         static_cast<unsigned char *>(buf),
                                         static_cast<int>(file.gcount()),
                                         !static_cast<bool>(file)));
+        if (err) break;
     }
 
     if (!err) {
         OKAY("Upload finished");
+    }
+
+    return err;
+}
+
+ERR FileManager::Delete(const char *filename) {
+    ERR err = static_cast<ERR>(::Delete(m_hBinding,
+                               const_cast<unsigned char *>(reinterpret_cast<const unsigned char*>(filename))));
+    if (!err) {
+        OKAY("Delete finished");
     }
 
     return err;
