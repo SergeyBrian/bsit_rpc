@@ -25,6 +25,8 @@ public:
 
     User &GetActiveUser();
 
+    void Logout();
+
 private:
     User m_activeUser;
     std::ifstream m_activeFile;

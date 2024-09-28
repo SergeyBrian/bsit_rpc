@@ -15,17 +15,22 @@ public:
 
     ERR Login(const char *username, const char *password);
 
+    void Logout();
+
     ERR Download(const char *src, const char *dest);
 
     std::string getCurrentUser();
 
     std::string getCurrentHost();
 
+    bool isLoggedIn();
+
 private:
     RPC_BINDING_HANDLE m_hBinding;
     unsigned char *m_szStringBinding;
     std::string m_username;
     std::string m_host;
+    bool m_isLoggedIn = false;
 };
 
 

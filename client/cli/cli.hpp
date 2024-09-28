@@ -31,6 +31,8 @@ private:
 
     void login();
 
+    void logout();
+
     ERR download(const char *src, const char *dest);
 
     CMD parse_command(std::string command, int *argc, char ***argv);

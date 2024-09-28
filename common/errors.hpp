@@ -8,6 +8,9 @@ enum ERR {
     ERR_Unknown,
     ERR_File_open,
     ERR_Unauthorized,
+    ERR_Permission_denied,
+    ERR_Logout_required,
+    ERR_Invalid_filename,
     ERR_Count_
 };
 
@@ -18,6 +21,9 @@ inline const char *errorText[ERR_Count_] = {
         "Unknown error",
         "Failed to open file",
         "User not authorized",
+        "Permission denied",
+        "Logout required after permission change",
+        "File not found",
 };
 
 inline ERR winCodeToErr(int code) {
@@ -26,6 +32,12 @@ inline ERR winCodeToErr(int code) {
             return ERR_Ok;
         case 1326:
             return ERR_Invalid_creds;
+        case 13:
+            return ERR_Permission_denied;
+        case 22:
+            return ERR_Logout_required;
+        case 2:
+            return ERR_Invalid_filename;
         default:
             return ERR_Unknown;
     }

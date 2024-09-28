@@ -5,9 +5,9 @@ Cli::Cli(FileManager *fileManager) {
 }
 
 void Cli::run() {
-    login();
     CMD cmd;
     do {
+        if (!m_fileManager->isLoggedIn()) login();
         std::string command;
         std::cout << m_fileManager->getCurrentUser() << '@' << m_fileManager->getCurrentHost() << " > ";
         std::getline(std::cin >> std::ws, command);
@@ -16,9 +16,12 @@ void Cli::run() {
         char **argv = nullptr;
         cmd = parse_command(command, &argc, &argv);
         ERR err = exec(cmd, argc, argv);
-        if (err) WARN("%s", errorText[err]);
+        if (err) {
+            WARN("%s", errorText[err]);
+        }
     } while (cmd != CMD_Exit);
-    OKAY("Bye :)");
+    logout();
+    std::cout << "Bye :)\n";
 }
 
 void Cli::login() {
@@ -102,9 +105,10 @@ CMD Cli::parse_command(std::string command, int *argc, char ***argv) {
 }
 
 ERR Cli::exec(CMD cmd, int argc, char **argv) {
-    ERR err;
+    ERR err = ERR_Ok;
     switch (cmd) {
         case CMD_Logout:
+            logout();
             break;
         case CMD_Download:
             if (argc < 3) {
@@ -114,7 +118,7 @@ ERR Cli::exec(CMD cmd, int argc, char **argv) {
             err = download(argv[1], argv[2]);
             break;
         default:
-            return ERR_Ok;
+            break;
     }
 
     return err;
@@ -122,4 +126,8 @@ ERR Cli::exec(CMD cmd, int argc, char **argv) {
 
 ERR Cli::download(const char *src, const char *dest) {
     return m_fileManager->Download(src, dest);
+}
+
+void Cli::logout() {
+    return m_fileManager->Logout();
 }

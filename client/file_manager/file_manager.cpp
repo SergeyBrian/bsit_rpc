@@ -58,11 +58,11 @@ FileManager::~FileManager() {
 }
 
 ERR FileManager::Login(const char *username, const char *password) {
-    int err;
+    ERR err;
     RpcTryExcept{
-                        err = ::Login(m_hBinding,
-                                      const_cast<unsigned char *>(reinterpret_cast<const unsigned char *>(username)),
-                                      const_cast<unsigned char *>(reinterpret_cast<const unsigned char *>(password)));
+                        err = static_cast<ERR>(::Login(m_hBinding,
+                                                       const_cast<unsigned char *>(reinterpret_cast<const unsigned char *>(username)),
+                                                       const_cast<unsigned char *>(reinterpret_cast<const unsigned char *>(password))));
                 }
     RpcExcept(1)
         {
@@ -71,15 +71,14 @@ ERR FileManager::Login(const char *username, const char *password) {
         }
     RpcEndExcept
 
-    switch (err) {
-        case ERR_Ok:
-            m_username = username;
-            return ERR_Ok;
-        case ERR_Invalid_creds:
-            WARN("%s", errorText[err]);
-        default:
-            return ERR_Unknown;
+    if (err != ERR_Ok) {
+        WARN("%s", errorText[err]);
+        return err;
     }
+
+    m_username = username;
+    m_isLoggedIn = true;
+    return ERR_Ok;
 }
 
 std::string FileManager::getCurrentUser() {
@@ -118,4 +117,13 @@ ERR FileManager::Download(const char *src, const char *dest) {
     file.close();
 
     return err;
+}
+
+bool FileManager::isLoggedIn() {
+    return m_isLoggedIn;
+}
+
+void FileManager::Logout() {
+    ::Logout(m_hBinding);
+    m_isLoggedIn = false;
 }
