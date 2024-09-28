@@ -127,3 +127,28 @@ void FileManager::Logout() {
     ::Logout(m_hBinding);
     m_isLoggedIn = false;
 }
+
+ERR FileManager::Upload(const char *src, const char *dest) {
+    unsigned char buf[BUF_SIZE];
+    ERR err = ERR_Ok;
+    std::ifstream file(src, std::ios::binary);
+    if (!file.is_open()) {
+        return ERR_File_open;
+    }
+    INFO("Uploading from %s to %s", src, dest);
+
+    while (file) {
+        file.read(reinterpret_cast<char *>(buf), BUF_SIZE);
+        err = static_cast<ERR>(::Upload(m_hBinding,
+                                        const_cast<unsigned char *>(reinterpret_cast<const unsigned char *>(dest)),
+                                        static_cast<unsigned char *>(buf),
+                                        static_cast<int>(file.gcount()),
+                                        !static_cast<bool>(file)));
+    }
+
+    if (!err) {
+        OKAY("Upload finished");
+    }
+
+    return err;
+}

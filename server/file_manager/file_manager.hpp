@@ -23,6 +23,8 @@ public:
 
     int Download(const unsigned char *filename, unsigned char *buffer, ERR *err, int size);
 
+    ERR Upload(const unsigned char *filename, const unsigned char *buffer, int size, int final);
+
     User &GetActiveUser();
 
     void Logout();
@@ -31,6 +33,8 @@ private:
     User m_activeUser;
     std::ifstream m_activeFile;
     std::string m_activeFileName;
+    std::ofstream m_activeUploadFile;
+    std::string m_activeUploadFileName;
 };
 
 inline FileManager *g_fileManager;

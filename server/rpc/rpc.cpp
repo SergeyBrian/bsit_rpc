@@ -100,3 +100,12 @@ void Logout(handle_t hBinding) {
     LOG("User %s logged out", FileManager::Instance().GetActiveUser().username.c_str());
     FileManager::Instance().Logout();
 }
+
+int Upload(handle_t hBinding, unsigned char *filename, unsigned char *buffer, int size, int final) {
+    if (!ImpersonateLoggedOnUser(FileManager::Instance().GetActiveUser().hBinding)) {
+        WARN("Upload attempt by unauthorized user");
+        return ERR_Unauthorized;
+    }
+
+    return FileManager::Instance().Upload(filename, buffer, size, final);
+}

@@ -11,6 +11,7 @@ enum CMD {
     CMD_Exit,
     CMD_Logout,
     CMD_Download,
+    CMD_Upload,
     CMD_Count_
 };
 
@@ -18,6 +19,7 @@ inline const char *commandText[CMD_Count_] = {
         "exit",
         "logout",
         "download",
+        "upload",
 };
 
 class Cli {
@@ -34,6 +36,8 @@ private:
     void logout();
 
     ERR download(const char *src, const char *dest);
+
+    ERR upload(const char *src, const char *dest);
 
     CMD parse_command(std::string command, int *argc, char ***argv);
 

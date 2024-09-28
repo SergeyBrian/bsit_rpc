@@ -117,6 +117,13 @@ ERR Cli::exec(CMD cmd, int argc, char **argv) {
             }
             err = download(argv[1], argv[2]);
             break;
+        case CMD_Upload:
+            if (argc < 3) {
+                err = ERR_Invalid_args;
+                break;
+            }
+            err = upload(argv[1], argv[2]);
+            break;
         default:
             break;
     }
@@ -130,4 +137,8 @@ ERR Cli::download(const char *src, const char *dest) {
 
 void Cli::logout() {
     return m_fileManager->Logout();
+}
+
+ERR Cli::upload(const char *src, const char *dest) {
+    return m_fileManager->Upload(src, dest);
 }

@@ -25,6 +25,8 @@ public:
 
     bool isLoggedIn();
 
+    ERR Upload(const char *src, const char *dest);
+
 private:
     RPC_BINDING_HANDLE m_hBinding;
     unsigned char *m_szStringBinding;
