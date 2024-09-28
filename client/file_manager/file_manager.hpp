@@ -29,6 +29,8 @@ public:
 
     ERR Delete(const char *filename);
 
+    static FileManager &Instance();
+
 private:
     RPC_BINDING_HANDLE m_hBinding;
     unsigned char *m_szStringBinding;
@@ -36,6 +38,8 @@ private:
     std::string m_host;
     bool m_isLoggedIn = false;
 };
+
+inline FileManager *g_fileManager = nullptr;
 
 
 #endif //BSIT_RPC_FILE_MANAGER_HPP

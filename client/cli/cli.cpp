@@ -5,6 +5,7 @@ Cli::Cli(FileManager *fileManager) {
 }
 
 void Cli::run() {
+    SetConsoleCtrlHandler(graceful_shutdown, true);
     CMD cmd;
     do {
         if (!m_fileManager->isLoggedIn()) login();
@@ -31,8 +32,13 @@ void Cli::login() {
     do {
         std::cout << "Username: ";
         std::cin >> username;
+        HANDLE hStdin = GetStdHandle(STD_INPUT_HANDLE);
+        DWORD mode = 0;
+        GetConsoleMode(hStdin, &mode);
+        SetConsoleMode(hStdin, mode & (~ENABLE_ECHO_INPUT));
         std::cout << "Password: ";
         std::cin >> password;
+        SetConsoleMode(hStdin, mode);
     } while (m_fileManager->Login(username.c_str(), password.c_str()));
 }
 
@@ -151,4 +157,10 @@ ERR Cli::upload(const char *src, const char *dest) {
 
 ERR Cli::delete_file(const char *filename) {
     return m_fileManager->Delete(filename);
+}
+
+BOOL Cli::graceful_shutdown(DWORD dwCtrlType) {
+    FileManager::Instance().Logout();
+
+    return FALSE;
 }

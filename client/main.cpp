@@ -13,8 +13,8 @@ int main(int argc, char **argv) {
         exit(1);
     }
 
-    unsigned char *host = reinterpret_cast<unsigned char *>(argv[1]);
-    unsigned char *port = reinterpret_cast<unsigned char *>(argv[2]);
+    auto *host = reinterpret_cast<unsigned char *>(argv[1]);
+    auto *port = reinterpret_cast<unsigned char *>(argv[2]);
 
     FileManager fileManager(host, port);
 

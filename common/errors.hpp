@@ -11,6 +11,7 @@ enum ERR {
     ERR_Permission_denied,
     ERR_Logout_required,
     ERR_Invalid_filename,
+    ERR_Server_busy,
     ERR_Count_
 };
 
@@ -24,6 +25,7 @@ inline const char *errorText[ERR_Count_] = {
         "Permission denied",
         "Logout required after permission change",
         "File not found",
+        "Server is busy"
 };
 
 inline ERR winCodeToErr(int code) {

@@ -46,6 +46,8 @@ private:
     CMD parse_command(std::string command, int *argc, char ***argv);
 
     ERR exec(CMD cmd, int argc, char **argv);
+
+    static BOOL WINAPI graceful_shutdown(DWORD dwCtrlType);
 };
 
 #endif //BSIT_RPC_CLI_HPP

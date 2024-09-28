@@ -37,6 +37,7 @@ FileManager::FileManager(const unsigned char *host, const unsigned char *port) {
     OKAY("Created binding from string");
 
     m_host = std::string(reinterpret_cast<const char *const>(host));
+    g_fileManager = this;
 }
 
 FileManager::~FileManager() {
@@ -162,4 +163,8 @@ ERR FileManager::Delete(const char *filename) {
     }
 
     return err;
+}
+
+FileManager &FileManager::Instance() {
+    return *g_fileManager;
 }

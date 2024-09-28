@@ -55,6 +55,7 @@ void Listen() {
 }
 
 int Login(handle_t hBinding, unsigned char *username, unsigned char *password) {
+    if (FileManager::Instance().GetActiveUser().isAuthorized) return ERR_Server_busy;
     INFO("Login requested for %s", username);
     ERR err;
     int status = LogonUser(reinterpret_cast<LPSTR>(username),
